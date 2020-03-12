@@ -1,5 +1,4 @@
 FROM library/ubuntu:16.04
-MAINTAINER 74th<site@j74th.com>
 
 RUN apt-get update
 RUN apt-get install -y software-properties-common
@@ -23,12 +22,14 @@ RUN gem install passenger --no-rdoc --no-ri
 RUN passenger-install-apache2-module --auto
 
 # Redmine
-RUN svn co http://svn.redmine.org/redmine/branches/3.3-stable/ /var/lib/redmine
+# RUN svn co http://svn.redmine.org/redmine/branches/3.3-stable/ /var/lib/redmine
+RUN svn co http://svn.redmine.org/redmine/branches/4.1-stable/ /var/lib/redmine
 ADD config/* /var/lib/redmine/config/
 WORKDIR /var/lib/redmine
 
-# redmine backlogs
-RUN git clone -b feature/redmine3 https://github.com/backlogs/redmine_backlogs.git /var/lib/redmine/plugins/redmine_backlogs
+# redmine backlogs -> The plugin has supported only redmine 2.x on officialy.  
+# RUN git clone -b feature/redmine3 https://github.com/backlogs/redmine_backlogs.git /var/lib/redmine/plugins/redmine_backlogs
+RUN git clone -b redmine4 https://github.com/ayapapa/redmine_backlogs.git /var/lib/redmine/plugins/redmine_backlogs
 RUN sed -i -e 's/gem "nokogiri".*/gem "nokogiri", "~> 1.7.2"/g' /var/lib/redmine/plugins/redmine_backlogs/Gemfile
 RUN sed -i -e 's/gem "capybara", "~> 1"/gem "capybara", ">= 0"/g' /var/lib/redmine/plugins/redmine_backlogs/Gemfile
 
