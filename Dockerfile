@@ -30,8 +30,8 @@ WORKDIR /var/lib/redmine
 # redmine backlogs -> The plugin has supported only redmine 2.x on officialy.  
 # RUN git clone -b feature/redmine3 https://github.com/backlogs/redmine_backlogs.git /var/lib/redmine/plugins/redmine_backlogs
 RUN git clone -b redmine4 https://github.com/ayapapa/redmine_backlogs.git /var/lib/redmine/plugins/redmine_backlogs
-RUN sed -i -e 's/gem "nokogiri".*/gem "nokogiri", "~> 1.7.2"/g' /var/lib/redmine/plugins/redmine_backlogs/Gemfile
-RUN sed -i -e 's/gem "capybara", "~> 1"/gem "capybara", ">= 0"/g' /var/lib/redmine/plugins/redmine_backlogs/Gemfile
+RUN sed -i -e 's/gem "nokogiri".*/gem "nokogiri", "~> 1.10.0"/g' /var/lib/redmine/plugins/redmine_backlogs/Gemfile
+#RUN sed -i -e 's/gem "capybara", "~> 1"/gem "capybara", ">= 0"/g' /var/lib/redmine/plugins/redmine_backlogs/Gemfile
 
 # scm creator
 RUN svn co http://svn.s-andy.com/scm-creator /var/lib/redmine/plugins/redmine_scm
@@ -49,13 +49,18 @@ RUN git clone https://github.com/peclik/clipboard_image_paste.git /var/lib/redmi
 
 # excel export
 RUN git clone https://github.com/two-pack/redmine_xls_export.git /var/lib/redmine/plugins/redmine_xls_export
-RUN sed -i -e 's/gem "nokogiri".*/gem "nokogiri", ">= 1.6.7.2"/g' /var/lib/redmine/plugins/redmine_xls_export/Gemfile
+# RUN sed -i -e 's/gem "nokogiri".*/gem "nokogiri", ">= 1.6.7.2"/g' /var/lib/redmine/plugins/redmine_xls_export/Gemfile
 
 # drafts
 RUN git clone https://github.com/jbbarth/redmine_drafts.git /var/lib/redmine/plugins/redmine_drafts
 
+# Redmine Github Hook Plugin
+RUN git clone https://github.com/koppen/redmine_github_hook.git /var/lib/redmine/plugins/redmine_github_hook
+
 # bundle and rake
-RUN bundle install --without development test --path vendor/bundle
+RUN bundle config set path 'vendor/bundle'
+RUN bundle config set without 'developement test'
+RUN bundle install
 RUN bundle exec gem install mysql
 RUN chown -R www-data:www-data /var/lib/redmine/
 ADD redmine/Makefile /var/lib/redmine/
